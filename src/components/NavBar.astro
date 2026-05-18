@@ -1,0 +1,46 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const esHref = "/";
+const enHref = "/en/";
+---
+
+<header class="navbar">
+  <div class="container">
+    <a href={lang === "es" ? "/" : "/en/"} class="navbar__logo">
+      FH<span>.</span>
+    </a>
+
+    <nav class="navbar__nav" aria-label="Navegación principal">
+      <a href="#hero"       class="navbar__link">{t("nav.about")}</a>
+      <a href="#experience" class="navbar__link">{t("nav.experience")}</a>
+      <a href="#projects"   class="navbar__link">{t("nav.projects")}</a>
+      <a href="#contact"    class="navbar__link">{t("nav.contact")}</a>
+    </nav>
+
+    <div class="navbar__right">
+      <!-- Language switch: links reales, sin JS -->
+      <div class="lang-switch" role="group" aria-label="Cambiar idioma">
+        <a href={esHref} aria-current={lang === "es" ? "true" : "false"}>ES</a>
+        <a href={enHref} aria-current={lang === "en" ? "true" : "false"}>EN</a>
+      </div>
+
+      <a
+        href="https://github.com/ferdev777"
+        target="_blank"
+        rel="noreferrer noopener"
+        class="navbar__link"
+      >
+        GitHub ↗
+      </a>
+    </div>
+  </div>
+</header>

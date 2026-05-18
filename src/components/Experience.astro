@@ -1,0 +1,57 @@
+---
+import { useTranslations } from "../i18n/utils";
+import { experience } from "../data/experience";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="experience" class="experience">
+  <div class="container">
+    <div class="experience__header">
+      <div>
+        <p class="label">{t("exp.subtitle")}</p>
+        <h2 class="section-title">{t("exp.title")}</h2>
+      </div>
+    </div>
+
+    <div class="exp-list">
+      {experience.map((item) => {
+        const endLabel = item.current ? t("exp.present") : (item.period.end ?? "");
+        return (
+          <article class="exp-item">
+            <!-- Columna izquierda -->
+            <div class="exp-item__left">
+              <p class="exp-item__period">
+                {item.period.start} — {endLabel}
+              </p>
+              <p class="exp-item__company">{item.company}</p>
+              <p class="exp-item__location">{item.location}</p>
+              {item.current && (
+                <span class="exp-item__badge">Current</span>
+              )}
+            </div>
+
+            <!-- Columna derecha -->
+            <div class="exp-item__right">
+              <h3 class="exp-item__role">{item.role[lang]}</h3>
+              <p class="exp-item__desc">{item.description[lang]}</p>
+              {item.stack.length > 0 && (
+                <div class="exp-item__stack">
+                  {item.stack.map((tech) => (
+                    <span class="stack-tag">{tech}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+</section>

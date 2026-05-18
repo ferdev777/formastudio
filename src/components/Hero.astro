@@ -1,0 +1,64 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section id="hero" class="hero">
+  <div class="container">
+    <p class="hero__tag">{t("hero.tag")}</p>
+
+    <h1 class="hero__name">
+      Fernando<br />
+      <em>Hirschfeld</em>
+    </h1>
+
+    <p class="hero__meta">
+      <span>{t("hero.role")}</span>
+      <span class="hero__dot" aria-hidden="true"></span>
+      <span>{t("hero.at")} Synapxix</span>
+    </p>
+
+    <p class="hero__bio">{t("hero.bio")}</p>
+
+    <p class="hero__studying">
+      {t("hero.studying")} — <span>{t("hero.studyAt")}</span>
+    </p>
+
+    <div class="hero__actions">
+      <a href="#projects" class="btn-primary">{t("hero.cta")}</a>
+      <a href="#contact"  class="btn-ghost">{t("hero.ctaContact")} →</a>
+    </div>
+
+    <div class="hero__links">
+      <a
+        href="https://github.com/ferdev777"
+        target="_blank"
+        rel="noreferrer noopener"
+        class="hero__link"
+      >
+        <span aria-hidden="true">⌥</span> github.com/ferdev777
+      </a>
+      <a
+        href="https://linkedin.com/in/fernando-hirschfeld"
+        target="_blank"
+        rel="noreferrer noopener"
+        class="hero__link"
+      >
+        <span aria-hidden="true">↗</span> linkedin.com/in/fernando-hirschfeld
+      </a>
+      <a href="mailto:ferdeveloperwork@gmail.com" class="hero__link">
+        <span aria-hidden="true">@</span> ferdeveloperwork@gmail.com
+      </a>
+      <span class="hero__link">
+        <span aria-hidden="true">◎</span> {t("hero.location")}
+      </span>
+    </div>
+  </div>
+</section>

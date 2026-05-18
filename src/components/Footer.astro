@@ -1,0 +1,21 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer__text">{t("footer.built")}</p>
+    <p class="footer__text">
+      <span>Fernando Hirschfeld</span> · {year} · {t("footer.rights")}
+    </p>
+  </div>
+</footer>

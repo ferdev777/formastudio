@@ -1,0 +1,153 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// ⚠️  Registrá tu form en https://formspree.io y reemplazá el ID
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+---
+
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="contact__inner">
+
+      <!-- Info izquierda -->
+      <div class="contact__info">
+        <p class="label">{t("contact.subtitle")}</p>
+        <h2 class="section-title">{t("contact.title")}</h2>
+        <p class="contact__intro">{t("contact.intro")}</p>
+
+        <div class="contact__direct">
+          <a href="mailto:ferdeveloperwork@gmail.com" class="contact__direct-item">
+            <i class="contact__direct-icon" aria-hidden="true">@</i>
+            ferdeveloperwork@gmail.com
+          </a>
+          <a
+            href="https://linkedin.com/in/fernando-hirschfeld"
+            target="_blank"
+            rel="noreferrer noopener"
+            class="contact__direct-item"
+          >
+            <i class="contact__direct-icon" aria-hidden="true">↗</i>
+            linkedin.com/in/fernando-hirschfeld
+          </a>
+          <a
+            href="https://github.com/ferdev777"
+            target="_blank"
+            rel="noreferrer noopener"
+            class="contact__direct-item"
+          >
+            <i class="contact__direct-icon" aria-hidden="true">⌥</i>
+            github.com/ferdev777
+          </a>
+          <span class="contact__direct-item">
+            <i class="contact__direct-icon" aria-hidden="true">◎</i>
+            {t("hero.location")}
+          </span>
+        </div>
+      </div>
+
+      <!-- Formulario derecha -->
+      <form
+        id="contact-form"
+        class="contact-form"
+        novalidate
+        data-endpoint={FORMSPREE_ENDPOINT}
+        data-msg-success={t("contact.success")}
+        data-msg-error={t("contact.error")}
+        data-msg-sending={t("contact.sending")}
+        data-msg-send={t("contact.send")}
+      >
+        <div class="form-group">
+          <label for="name" class="form-label">{t("contact.name")}</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            class="form-input"
+            placeholder={t("contact.namePh")}
+            required
+            autocomplete="name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email" class="form-label">{t("contact.email")}</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            class="form-input"
+            placeholder={t("contact.emailPh")}
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="message" class="form-label">{t("contact.message")}</label>
+          <textarea
+            id="message"
+            name="message"
+            class="form-input"
+            placeholder={t("contact.messagePh")}
+            required
+          ></textarea>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:16px">
+          <button type="submit" class="btn-primary" id="contact-submit">
+            {t("contact.send")}
+          </button>
+          <p id="contact-status" class="form-status" aria-live="polite"></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form     = document.getElementById("contact-form") as HTMLFormElement;
+  const submit   = document.getElementById("contact-submit") as HTMLButtonElement;
+  const status   = document.getElementById("contact-status") as HTMLParagraphElement;
+
+  const ENDPOINT  = form.dataset.endpoint!;
+  const MSG_OK    = form.dataset.msgSuccess!;
+  const MSG_ERR   = form.dataset.msgError!;
+  const MSG_SEND  = form.dataset.msgSending!;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    submit.disabled  = true;
+    submit.textContent = MSG_SEND;
+    status.textContent = "";
+    status.className   = "form-status";
+
+    try {
+      const res = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+
+      if (!res.ok) throw new Error();
+
+      status.textContent = MSG_OK;
+      status.className   = "form-status form-status--success";
+      form.reset();
+    } catch {
+      status.textContent = `${MSG_ERR} ferdeveloperwork@gmail.com`;
+      status.className   = "form-status form-status--error";
+    } finally {
+      submit.disabled  = false;
+      submit.textContent = form.dataset.msgSend!;
+    }
+  });
+</script>

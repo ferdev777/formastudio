@@ -1,0 +1,236 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Strings que necesita el script de cliente
+const strings = {
+  loading:   t("proj.loading"),
+  empty:     t("proj.empty"),
+  updatedAt: t("proj.updatedAt"),
+  all:       t("proj.all"),
+  updated:   t("proj.updated"),
+  stars:     t("proj.stars"),
+  name:      t("proj.name"),
+};
+
+const locale = lang === "es" ? "es-AR" : "en-US";
+---
+
+<section id="projects" class="projects">
+  <div class="container">
+    <!-- Header -->
+    <div class="projects__header">
+      <p class="label">{t("proj.subtitle")}</p>
+      <h2 class="section-title">{t("proj.title")}</h2>
+    </div>
+
+    <!-- Stats: rellenadas por JS -->
+    <div class="projects__stats" id="js-stats" aria-live="polite">
+      <div class="state-screen">
+        <div class="loader" aria-hidden="true">
+          <div class="loader__dot"></div>
+          <div class="loader__dot"></div>
+          <div class="loader__dot"></div>
+        </div>
+        <p>{t("proj.loading")}</p>
+      </div>
+    </div>
+
+    <!-- Controls: ocultos hasta que carga JS -->
+    <div class="projects__controls" id="js-controls" style="display:none">
+      <input
+        type="search"
+        id="js-search"
+        class="search-input"
+        placeholder={t("proj.search")}
+        aria-label={t("proj.search")}
+      />
+      <select id="js-sort" class="sort-select" aria-label={t("proj.sortLabel")}>
+        <option value="updated">{t("proj.updated")}</option>
+        <option value="stars">{t("proj.stars")}</option>
+        <option value="name">{t("proj.name")}</option>
+      </select>
+      <div class="lang-tabs" id="js-lang-tabs" role="group" aria-label="Filtrar por lenguaje">
+        <!-- Generados dinámicamente -->
+      </div>
+    </div>
+
+    <!-- Grid de repos: rellenado por JS -->
+    <div id="js-grid"></div>
+  </div>
+</section>
+
+<script define:vars={{ strings, locale }}>
+  // ─── Colores de lenguajes ──────────────────────────────
+  const LANG_COLORS = {
+    Python: "#3572A5", TypeScript: "#3178c6", JavaScript: "#f0db4f",
+    Go: "#00ADD8", Rust: "#dea584", Shell: "#89e051", CSS: "#563d7c",
+    HTML: "#e34c26", Vue: "#41b883", Java: "#b07219", "C#": "#178600",
+    "C++": "#f34b7d", Ruby: "#701516", Kotlin: "#A97BFF", Dart: "#00B4AB",
+  };
+
+  // ─── Estado ────────────────────────────────────────────
+  let allRepos = [];
+  let currentLang = "all";
+  let currentSort = "updated";
+  let currentSearch = "";
+
+  const $stats    = document.getElementById("js-stats");
+  const $controls = document.getElementById("js-controls");
+  const $grid     = document.getElementById("js-grid");
+  const $search   = document.getElementById("js-search");
+  const $sort     = document.getElementById("js-sort");
+  const $tabs     = document.getElementById("js-lang-tabs");
+
+  // ─── Fetch GitHub ──────────────────────────────────────
+  async function fetchRepos() {
+    try {
+      const res = await fetch(
+        "https://api.github.com/users/ferdev777/repos?per_page=100&sort=updated"
+      );
+      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+      const data = await res.json();
+      allRepos = data.filter((r) => !r.fork);
+      init();
+    } catch (e) {
+      $stats.innerHTML = `<p style="font-family:var(--font-mono);font-size:12px;color:var(--text-3)">Error: ${e.message}</p>`;
+    }
+  }
+
+  // ─── Init controles ────────────────────────────────────
+  function init() {
+    renderStats();
+    renderLangTabs();
+    $controls.style.display = "flex";
+    renderGrid();
+  }
+
+  function renderStats() {
+    const totalStars = allRepos.reduce((s, r) => s + r.stargazers_count, 0);
+    const langs = new Set(allRepos.map((r) => r.language).filter(Boolean)).size;
+    $stats.innerHTML = `
+      <div class="stat">
+        <div class="stat__number">${allRepos.length}</div>
+        <div class="stat__label">Repos</div>
+      </div>
+      <div class="stat">
+        <div class="stat__number">${totalStars}</div>
+        <div class="stat__label">Stars</div>
+      </div>
+      <div class="stat">
+        <div class="stat__number">${langs}</div>
+        <div class="stat__label">Langs</div>
+      </div>
+    `;
+  }
+
+  function renderLangTabs() {
+    const langs = ["all", ...Array.from(
+      new Set(allRepos.map((r) => r.language).filter(Boolean))
+    ).sort()];
+
+    $tabs.innerHTML = langs.map((lang) => `
+      <button
+        class="lang-tab${lang === "all" ? " active" : ""}"
+        data-lang="${lang}"
+      >
+        ${lang === "all" ? strings.all : lang}
+      </button>
+    `).join("");
+
+    $tabs.querySelectorAll(".lang-tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentLang = btn.dataset.lang;
+        $tabs.querySelectorAll(".lang-tab").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderGrid();
+      });
+    });
+  }
+
+  // ─── Render grid ───────────────────────────────────────
+  function getFiltered() {
+    const q = currentSearch.toLowerCase();
+    return allRepos
+      .filter((r) => currentLang === "all" || r.language === currentLang)
+      .filter((r) =>
+        q === "" ||
+        r.name.toLowerCase().includes(q) ||
+        (r.description ?? "").toLowerCase().includes(q)
+      )
+      .sort((a, b) => {
+        if (currentSort === "stars") return b.stargazers_count - a.stargazers_count;
+        if (currentSort === "name")  return a.name.localeCompare(b.name);
+        return new Date(b.updated_at) - new Date(a.updated_at);
+      });
+  }
+
+  function repoCard(repo) {
+    const color = LANG_COLORS[repo.language] ?? "#555";
+    const date  = new Date(repo.updated_at).toLocaleDateString(locale, {
+      month: "short", year: "numeric",
+    });
+    const topics = repo.topics?.slice(0, 4)
+      .map((t) => `<span class="repo-topic">${t}</span>`)
+      .join("") ?? "";
+
+    return `
+      <a href="${repo.html_url}" target="_blank" rel="noreferrer" class="repo-card">
+        <div class="repo-card__header">
+          <span class="repo-card__name">${repo.name}</span>
+          <span class="repo-card__arrow" aria-hidden="true">↗</span>
+        </div>
+        ${repo.description ? `<p class="repo-card__desc">${repo.description}</p>` : ""}
+        ${topics ? `<div class="repo-card__topics">${topics}</div>` : ""}
+        <div class="repo-card__footer">
+          <span class="repo-lang">
+            ${repo.language
+              ? `<span class="repo-lang__dot" style="background:${color}"></span>${repo.language}`
+              : ""}
+          </span>
+          <div class="repo-meta">
+            <span>★ ${repo.stargazers_count}</span>
+            <span>⑂ ${repo.forks_count}</span>
+          </div>
+        </div>
+        <p class="repo-card__date">${strings.updatedAt} ${date}</p>
+      </a>
+    `;
+  }
+
+  function renderGrid() {
+    const repos = getFiltered();
+    if (repos.length === 0) {
+      $grid.innerHTML = `
+        <div class="state-screen">
+          <p>${strings.empty}</p>
+        </div>`;
+      return;
+    }
+    $grid.innerHTML = `
+      <div class="repos-grid">
+        ${repos.map(repoCard).join("")}
+      </div>`;
+  }
+
+  // ─── Event listeners ───────────────────────────────────
+  $search.addEventListener("input", (e) => {
+    currentSearch = e.target.value;
+    renderGrid();
+  });
+
+  $sort.addEventListener("change", (e) => {
+    currentSort = e.target.value;
+    renderGrid();
+  });
+
+  // ─── Arrancar ──────────────────────────────────────────
+  fetchRepos();
+</script>
