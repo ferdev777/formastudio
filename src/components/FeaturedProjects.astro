@@ -1,0 +1,123 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const projects = [
+  {
+    id: "synapxix",
+    name: "Synapxix",
+    description: "Plataforma educativa cognitiva para el aprendizaje adaptativo construida en un monorepo (Nx). Desarrollé el backend en NestJS integrando un motor de economía (XP, recompensas), perfiles cognitivos y IA generativa (Google Generative AI). El frontend cuenta con interfaces de juego interactivas y paneles administrativos en Angular.",
+    role: "Technical Team Lead",
+    tags: ["Angular", "NestJS", "PostgreSQL", "Nx", "Prisma", "GenAI"],
+    link: "https://github.com/nexosdi/synapxix"
+  },
+  {
+    id: "aisuite",
+    name: "AI Suite",
+    description: "AI Studio corporativo (NexosDI) que centraliza herramientas de IA y automatización. Incluye orquestación de agentes con Langflow, automatización de procesos mediante Autopilots y flujos con n8n. La plataforma gestiona estado y vectores utilizando PostgreSQL, Qdrant y bases de datos en grafo (Neo4j).",
+    role: "Fullstack Developer - AI",
+    tags: ["TypeScript", "Langflow", "Qdrant", "Neo4j", "n8n", "PostgreSQL"],
+    private: true
+  },
+  {
+    id: "hardsendhub",
+    name: "Hardsendhub",
+    description: "Sistema de procesamiento y envío masivo de facturas en PDF por email. Desarrollé el backend concurrente en Go con SQLite para procesar miles de archivos, reintentos automáticos y rate limiting con la API de Resend. El frontend en React incluye monitoreo en tiempo real vía WebSockets.",
+    role: "Fullstack Developer",
+    tags: ["Go", "React", "SQLite", "WebSockets", "Resend API"],
+    link: "https://github.com/ferdev777/hardsendhub"
+  }
+];
+---
+
+<section id="featured" class="featured">
+  <div class="container">
+    <div class="featured__header projects__header">
+      <p class="label">{t("featured.subtitle")}</p>
+      <h2 class="section-title">{t("featured.title")}</h2>
+    </div>
+
+    <div class="featured-list">
+      {projects.map((project) => (
+        <div class="featured-card">
+          <div class="featured-card__content">
+            <h3 class="featured-card__title">{project.name}</h3>
+            <p class="featured-card__role">{project.role}</p>
+            <p class="featured-card__desc">{project.description}</p>
+            <div class="featured-card__tags">
+              {project.tags.map(tag => <span class="stack-tag">{tag}</span>)}
+            </div>
+            {project.private ? (
+              <span class="btn-ghost" style="margin-top: 24px; cursor: default; opacity: 0.6;">
+                Proyecto privado (Neops)
+              </span>
+            ) : (
+              <a href={project.link} target="_blank" rel="noreferrer" class="btn-ghost" style="margin-top: 24px;">
+                {t("featured.visit")} →
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured {
+    padding: 100px 0;
+    border-top: 1px solid var(--border-light);
+  }
+  .featured-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+  .featured-card {
+    border: 1px solid var(--border-light);
+    background: var(--surface);
+    padding: 40px;
+    border-radius: var(--radius);
+    transition: transform 0.3s var(--ease), border-color 0.3s;
+  }
+  .featured-card:hover {
+    border-color: var(--border);
+    transform: translateY(-2px);
+  }
+  .featured-card__title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--text-1);
+    margin-bottom: 8px;
+  }
+  .featured-card__role {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+  .featured-card__desc {
+    font-size: 15px;
+    color: var(--text-2);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    max-width: 600px;
+  }
+  .featured-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  @media (max-width: 768px) {
+    .featured-card { padding: 24px; }
+  }
+</style>

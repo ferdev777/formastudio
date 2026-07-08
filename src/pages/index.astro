@@ -2,6 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import NavBar from "../components/NavBar.astro";
 import Hero from "../components/Hero.astro";
+import FeaturedProjects from "../components/FeaturedProjects.astro";
+import Websites from "../components/Websites.astro";
 import Experience from "../components/Experience.astro";
 import Projects from "../components/Projects.astro";
 import Contact from "../components/Contact.astro";
@@ -12,12 +14,14 @@ const lang = "es" as const;
 
 <Layout
   lang={lang}
-  title="Fernando Hirschfeld — Desarrollador Fullstack · IA · Cloud"
-  description="Portfolio de Fernando Hirschfeld. Technical Team Lead en Synapxix. Especializado en APIs de alto rendimiento, arquitecturas serverless e integración de IA."
+  title="Fernando Hirschfeld"
+  description="Desarrollador Fullstack y Arquitecto de Software enfocado en el ecosistema JavaScript, Node.js y React."
 >
   <NavBar lang={lang} />
   <main>
     <Hero lang={lang} />
+    <FeaturedProjects lang={lang} />
+    <Websites lang={lang} />
     <Experience lang={lang} />
     <Projects lang={lang} />
     <Contact lang={lang} />

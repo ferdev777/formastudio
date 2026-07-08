@@ -6,6 +6,8 @@ export const ui = {
     // nav
     "nav.about":      "Sobre mí",
     "nav.experience": "Experiencia",
+    "nav.featured":   "Destacados",
+    "nav.websites":   "Webs",
     "nav.projects":   "Proyectos",
     "nav.contact":    "Contacto",
     // hero
@@ -34,6 +36,14 @@ export const ui = {
     "proj.loading":   "Cargando repos desde GitHub...",
     "proj.empty":     "Sin resultados",
     "proj.updatedAt": "Actualizado",
+    // featured
+    "featured.title":     "Proyectos Destacados",
+    "featured.subtitle":  "Mis mejores trabajos",
+    "featured.visit":     "Ver en GitHub",
+    // websites
+    "websites.title":     "Sitios Web",
+    "websites.subtitle":  "Páginas publicadas",
+    "websites.visit":     "Visitar sitio",
     // contact
     "contact.title":       "Contacto",
     "contact.subtitle":    "Trabajemos juntos",
@@ -55,6 +65,8 @@ export const ui = {
   en: {
     "nav.about":      "About",
     "nav.experience": "Experience",
+    "nav.featured":   "Featured",
+    "nav.websites":   "Websites",
     "nav.projects":   "Projects",
     "nav.contact":    "Contact",
     "hero.tag":       "Fullstack · AI · Cloud Developer",
@@ -80,6 +92,12 @@ export const ui = {
     "proj.loading":   "Loading repos from GitHub...",
     "proj.empty":     "No results found",
     "proj.updatedAt": "Updated",
+    "featured.title":     "Featured Projects",
+    "featured.subtitle":  "My best work",
+    "featured.visit":     "View on GitHub",
+    "websites.title":     "Websites",
+    "websites.subtitle":  "Published pages",
+    "websites.visit":     "Visit site",
     "contact.title":       "Contact",
     "contact.subtitle":    "Let's build something",
     "contact.intro":       "Open to freelance projects, remote positions, and collaborations. If you have an idea, let's talk.",
