@@ -2,6 +2,11 @@
 import { useTranslations } from "../i18n/utils";
 import type { Lang } from "../i18n/ui";
 
+import IconMail from "./icons/IconMail.astro";
+import IconLinkedin from "./icons/IconLinkedin.astro";
+import IconGithub from "./icons/IconGithub.astro";
+import IconMapPin from "./icons/IconMapPin.astro";
+
 interface Props {
   lang: Lang;
 }
@@ -25,7 +30,7 @@ const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
 
         <div class="contact__direct">
           <a href="mailto:ferdeveloperwork@gmail.com" class="contact__direct-item">
-            <i class="contact__direct-icon" aria-hidden="true">@</i>
+            <IconMail class="contact__direct-icon" aria-hidden="true" />
             ferdeveloperwork@gmail.com
           </a>
           <a
@@ -34,7 +39,7 @@ const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
             rel="noreferrer noopener"
             class="contact__direct-item"
           >
-            <i class="contact__direct-icon" aria-hidden="true">↗</i>
+            <IconLinkedin class="contact__direct-icon" aria-hidden="true" />
             linkedin.com/in/fernando-hirschfeld
           </a>
           <a
@@ -43,11 +48,11 @@ const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
             rel="noreferrer noopener"
             class="contact__direct-item"
           >
-            <i class="contact__direct-icon" aria-hidden="true">⌥</i>
+            <IconGithub class="contact__direct-icon" aria-hidden="true" />
             github.com/ferdev777
           </a>
           <span class="contact__direct-item">
-            <i class="contact__direct-icon" aria-hidden="true">◎</i>
+            <IconMapPin class="contact__direct-icon" aria-hidden="true" />
             {t("hero.location")}
           </span>
         </div>

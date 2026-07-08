@@ -23,7 +23,7 @@ const strings = {
 const locale = lang === "es" ? "es-AR" : "en-US";
 ---
 
-<section id="projects" class="projects">
+<section id="projects" class="projects" data-strings={JSON.stringify(strings)} data-locale={locale}>
   <div class="container">
     <!-- Header -->
     <div class="projects__header">
@@ -67,7 +67,12 @@ const locale = lang === "es" ? "es-AR" : "en-US";
   </div>
 </section>
 
-<script define:vars={{ strings, locale }}>
+<script>
+  import { getFilteredRepos } from "../utils/github";
+
+  const section = document.getElementById("projects");
+  const strings = JSON.parse(section.dataset.strings);
+  const locale = section.dataset.locale;
   // ─── Colores de lenguajes ──────────────────────────────
   const LANG_COLORS = {
     Python: "#3572A5", TypeScript: "#3178c6", JavaScript: "#f0db4f",
@@ -157,19 +162,7 @@ const locale = lang === "es" ? "es-AR" : "en-US";
 
   // ─── Render grid ───────────────────────────────────────
   function getFiltered() {
-    const q = currentSearch.toLowerCase();
-    return allRepos
-      .filter((r) => currentLang === "all" || r.language === currentLang)
-      .filter((r) =>
-        q === "" ||
-        r.name.toLowerCase().includes(q) ||
-        (r.description ?? "").toLowerCase().includes(q)
-      )
-      .sort((a, b) => {
-        if (currentSort === "stars") return b.stargazers_count - a.stargazers_count;
-        if (currentSort === "name")  return a.name.localeCompare(b.name);
-        return new Date(b.updated_at) - new Date(a.updated_at);
-      });
+    return getFilteredRepos(allRepos, currentLang, currentSearch, currentSort);
   }
 
   function repoCard(repo) {
@@ -185,7 +178,7 @@ const locale = lang === "es" ? "es-AR" : "en-US";
       <a href="${repo.html_url}" target="_blank" rel="noreferrer" class="repo-card">
         <div class="repo-card__header">
           <span class="repo-card__name">${repo.name}</span>
-          <span class="repo-card__arrow" aria-hidden="true">↗</span>
+          <span class="repo-card__arrow" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></span>
         </div>
         ${repo.description ? `<p class="repo-card__desc">${repo.description}</p>` : ""}
         ${topics ? `<div class="repo-card__topics">${topics}</div>` : ""}

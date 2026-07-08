@@ -1,0 +1,129 @@
+---
+import { useTranslations } from "../i18n/utils";
+import type { Lang } from "../i18n/ui";
+import IconExternalLink from "./icons/IconExternalLink.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const websites = [
+  {
+    id: "nocios",
+    name: "Nocios",
+    url: "https://nocios.com",
+    image: "/images/nocios.png"
+  },
+  {
+    id: "videodigital",
+    name: "Video Digital",
+    url: "https://videodigital.com.ar",
+    image: "/images/videodigital.png"
+  },
+  {
+    id: "devrow",
+    name: "Devrow",
+    url: "https://devrow.vercel.app",
+    image: "/images/devrow.png"
+  }
+];
+---
+
+<section id="websites" class="websites">
+  <div class="container">
+    <div class="websites__header projects__header">
+      <p class="label">{t("websites.subtitle")}</p>
+      <h2 class="section-title">{t("websites.title")}</h2>
+    </div>
+
+    <div class="websites-grid">
+      {websites.map((site) => (
+        <a href={site.url} target="_blank" rel="noreferrer" class="website-card">
+          <div class="website-card__image-wrapper">
+            <img src={site.image} alt={`Captura de pantalla de ${site.name}`} loading="lazy" class="website-card__image" />
+            <div class="website-card__overlay">
+              <span class="btn-primary" style="display:flex;align-items:center;">{t("websites.visit")} <IconExternalLink style="width: 16px; height: 16px; margin-left: 6px;" /></span>
+            </div>
+          </div>
+          <div class="website-card__info">
+            <h3 class="website-card__name">{site.name}</h3>
+            <p class="website-card__url">{site.url.replace('https://', '')}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .websites {
+    padding: 100px 0;
+    border-top: 1px solid var(--border-light);
+  }
+  .websites-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+  }
+  .website-card {
+    display: block;
+    text-decoration: none;
+    flex: 1 1 320px;
+    max-width: 500px;
+  }
+  .website-card__image-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border-light);
+    margin-bottom: 16px;
+    background: var(--surface);
+  }
+  .website-card__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.4s var(--ease);
+  }
+  .website-card:hover .website-card__image {
+    transform: scale(1.05);
+  }
+  .website-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 8, 8, 0.6);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s var(--ease);
+  }
+  .website-card:hover .website-card__overlay {
+    opacity: 1;
+  }
+  .website-card__info {
+    text-align: center;
+  }
+  .website-card__name {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--text-1);
+    margin-bottom: 4px;
+    transition: color 0.2s;
+  }
+  .website-card:hover .website-card__name {
+    color: var(--accent);
+  }
+  .website-card__url {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+  }
+</style>
